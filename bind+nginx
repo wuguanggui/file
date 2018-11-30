@@ -1,0 +1,87 @@
+DNS域名配置：
+1.sudo apt-get install bind9 
+
+2./etc/bind/named.conf.options文件配置:
+acl "trusted"{                     //初始化一个名为"trusted"列表，里面存放着ip段，这里为所有ip
+  any;
+};
+
+options {
+  recursion yes;                        //开启dns递归解析
+  allow-recursion {trusted;};           //允许递归解析的ip列表
+  listen-on {any;};                     //侦听可以获取的网络上任何ip的dns请求
+  allow-transfer{none;};
+
+  forwarders{                          //转发dns请求
+    114.114.114.114;
+  };
+};
+
+3.named.conf.local存放着一些域的定义，譬如下面有一个叫做 test.com的域，当需要解析的是*.test.com这样的域名，就会使用该域进行查找，域名和ip的对应信息存储在数据库文件/etc/bind/zones/db.test.com中:
+zone "test.com"{
+    type master;
+    file "/etc/bind/zones/db.test.com";
+};
+
+//ip->domain
+zone "0.168.192.in-addr.arpa" in {
+        type master;
+        file "/etc/bind/zones/db.0.168.192";
+};
+
+
+4. /etc/bind/zones/db.test.com文件配置：
+;
+;BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     test.com. root.test.com. (
+                        2               ;Serial
+                        604800          ;Refresh
+                        86400           ;Retry
+                        2419200         ;Expire
+                        604800  )       ;Negative Cache TTL
+;
+@       IN      NS      ns.test.com.
+@       IN      A       192.168.0.112
+ns      IN      A       192.168.0.112
+www     IN      A       192.168.0.112
+test    IN      A       192.168.0.112
+test01  IN      A       192.168.0.112
+test10  IN      A       192.168.1.100
+test10  IN      A       192.168.1.101
+test10  IN      A       192.168.1.102
+
+
+5./etc/bind/zones/db.0.168.192配置:
+$TTL    604800
+@       IN      SOA     test.com. root.test.com. (
+                2               ;Serial Number
+                604800          ;Refresh
+                86400           ;Retry
+                2419200         ;Expire
+                86400   );      ;Minimum
+
+@       IN      NS      test.com.
+191     IN      PTR     ns.test.com.
+191     IN      PTR     test.test.com.
+191     IN      PTR     test01.test.com.
+192     IN      PTR     test02.test.com.
+
+6. 检查配置、重启
+hejun@ubuntu:/etc/bind/zones$ named-checkconf
+hejun@ubuntu:/etc/bind/zones$ named-checkzone test.com /etc/bind/zones/db.test.com
+
+zone local.com/IN: loaded serial 2
+OK
+
+hejun@ubuntu:/etc/bind/zones$ named-checkzone db.0.168.192 /etc/bind/zones/db.0.168.192
+
+zone db.1.168.192/IN: loaded serial 2
+OK
+
+7.重启bind服务。
+
+sudo service bind9 restart  #sudo /etc/init.d/bind9 restart
+
+8.可以修改本机的/etc/resolve.conf文件修改dns服务器地址进行测试，也可以使用dig指令进行测试, 指令格式为 : dig 域名 @dns服务器地址，由于此处dns的服务器是搭建在本地，所以使用了127.0.0.1,

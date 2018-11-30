@@ -1,0 +1,134 @@
+Gitlab token api:
+Nvv5bbdysS1dVSq9oGa5
+
+localhost api token:
+pS2ay7cc8JyDbSb7tgyE
+
+
+
+
+
+netstat命令各个参数说明如下：
+
+　　-t : 指明显示TCP端口
+
+　　-u : 指明显示UDP端口
+
+　　-l : 仅显示监听套接字(所谓套接字就是使应用程序能够读写与收发通讯协议(protocol)与资料的程序)
+
+　　-p : 显示进程标识符和程序名称，每一个套接字/端口都属于一个程序。
+
+　　-n : 不进行DNS轮询(可以加速操作)
+
+
+ubuntu18 静态ip设置：
+sudo vim /etc/network/interfaces
+
+ auto wlp2s0
+ iface wlp2s0 inet static
+ address 192.168.0.112
+ netmask 255.255.255.0
+ gateway 192.168.0.1
+
+执行 vim /etc/NetworkManager/NetworkManager.conf     将managed=false 改成true
+
+
+解除系统绑定：
+mv /etc/resolv.conf /etc/resolv.conf.link
+
+vim /etc/resolv.conf #设置nameserver
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+
+#绑定
+sudo chattr +i /etc/resolv.conf
+
+a：让文件或目录仅供附加用途；
+b：不更新文件或目录的最后存取时间；
+c：将文件或目录压缩后存放；
+d：将文件或目录排除在倾倒操作之外；
+i：不得任意更动文件或目录；
+s：保密性删除文件或目录；
+S：即时更新文件或目录；
+u：预防意外删除。
+
+sudo service network-manager restart
+
+刷新ip地址：
+sudo netplan apply
+
+gitlab #设置允许本地请求
+
+login:
+username: admin@example.com
+password:开始设置的密码
+
+找到admin area设置：
+OutBoundd Request 勾选Allow request ....
+
+
+
+3、重建配置 
+gitlab-ctl reconfigure
+
+gitlab 日常管理命令
+
+gitlab-ctl start 
+gitlab-ctl stop 
+gitlab-ctl status 
+gitlab-ctl restart 
+gitlab-ctl reconfigure
+
+
+添加规则
+在终端输入:
+sudo iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+中间的80为所需要开放的端口
+
+保存规则
+在终端输入
+sudo iptables-save
+
+安装iptables-persistent永久开放固定端口：
+sudo apt-get install iptables-persistent
+持久化规则
+sudo netfilter-persistent save
+sudo netfilter-persistent reload
+
+查看监听端口:
+sudo netstat -pantu
+
+
+启动jenkins:
+nohup java –jar jenkins.war &
+
+启动php-fpm:
+sudo /usr/local/php/sbin/php-fpm
+
+关闭php-fpm:
+kill -INT `cat /usr/local/php/var/run/php-fpm.pid`
+
+平滑重启php-fpm:
+kill -USR2 `cat /usr/local/php/var/run/php-fpm.pid`
+
+执行 sudo service apache2 restart 重启apache 即可
+
+然后重启Docker服务。
+
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+sudo docker run --detach --hostname gitlab.golang.com --publish 443:443 --publish 80:80 --publish 24:22 --name gitlab --restart always --volume /srv/gitlab/config:/etc/gitlab --volume /srv/gitlab/logs:/var/log/gitlab --volume /srv/gitlab/data:/var/opt/gitlab gitlab/gitlab-ce:latest
+
+
+sudo docker run --detach \
+--hostname gitlab.example.com \
+--publish 443:443 --publish 80:80 --publish 22:22 \
+--name gitlab \
+--restart always \
+--volume /srv/gitlab/config:/etc/gitlab \
+--volume /srv/gitlab/logs:/var/log/gitlab \
+--volume /srv/gitlab/data:/var/opt/gitlab \
+gitlab/gitlab-ce:latest
+
+

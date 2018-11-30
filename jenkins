@@ -1,0 +1,33 @@
+					golang项目在jenkins上自动部署
+项目环境：jenkins、gitlab、golang
+1、安装jenkins、gitlab
+2、jenkins系统设置：
+	配置gitlab:
+	(1)Gitlab host URL:http://192.168.0.112:8081
+	(2)Credentials: #注意Gitlab API token 在gitlab用户的Access Tokens生成
+3.新建项目：(选择：构建一个自由风格的软件项目,一般是第一个）
+4.源码管理：git
+	
+	Repository URL: #项目的路径
+		http://192.168.0.112:8081/golang/test.git
+	Credentials: #登陆方式
+		（1）用户名和密码 --->http://192.168.0.112:8081/golang/test.git
+		 (2) ssh登陆     ---->git@192.168.0.112:8081/golang/test.git
+		选择对应的方式
+	Branch Specifier: 代码分支
+
+5.构建触发器:
+(1)选择：
+Build when a change is pushed to GitLab. GitLab webhook URL: http://192.168.0.111:8086/project/test
+(2)高级设置：点击Generate 生成 Secret token
+(3)复制GitLab webhook URL和Secret token，保存退出jenkins
+
+6.Gitlab 到对应项目,选择settings-->integrations:
+(1)把jenkins的 GitLab webhook URL 复制到 URL，jenkins的 Secret token 复制到Secret Token
+(2)Trigger:选择push events、Enable SSL veriflcation
+(3)Add webhook
+
+最后点击右下角的test --->Push events 出现:Hook executed sucessfully:HTTP 200 表示成功
+
+找到jenkins的对应项目：
+构建执行状态：项目开始执行构建操作
