@@ -1,10 +1,5 @@
 Gitlab token api:
-Nvv5bbdysS1dVSq9oGa5
-
-localhost api token:
-pS2ay7cc8JyDbSb7tgyE
-
-
+m-ybx9RkU69JxbaGV5cA
 
 
 
@@ -52,6 +47,19 @@ s：保密性删除文件或目录；
 S：即时更新文件或目录；
 u：预防意外删除。
 
+
+/etc/netplan/01-network-manager-all.yaml 配置:
+# Let NetworkManager manage all devices on this system
+network:
+  version: 2
+  #  renderer: NetworkManager
+  ethernets:
+          wlp2s0:
+                  addresses: [192.168.0.112/24]
+                  gateway4: 192.168.0.1
+                  nameservers:
+                        addresses: [192.168.0.1]
+重启网卡：
 sudo service network-manager restart
 
 刷新ip地址：

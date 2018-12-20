@@ -1,0 +1,98 @@
+#mysqld --initialize --console
+#mysqld install
+#mysqld --initialize-insecure    #注意: 在 5.7 需要初始化 data 目录：
+
+#net start mysql
+#mysql -u root -p
+
+CREATE USER 'root'@'localhost' IDENTIFIED BY 'jdah';
+
+alter user 'root'@'localhost' identified with mysql_native_password by 'jdah';
+
+GRANT ALL ON *.* TO 'jdah'@'localhost' WITH GRANT OPTION; 
+
+FLUSH PRIVILEGES; #刷新权限 
+
+
+应用程序使用名为app_db的数据库 。
+
+
+要创建角色，请使用CREATE ROLE：
+
+CREATE ROLE 'app_developer', 'app_read', 'app_write'; 
+角色名称与用户帐户名称非常相似，由格式中的用户部分和主机部分组成。主机部分，如果省略，则默认为%。用户和主机部分可以不加引号，除非它们包含特殊字符。与帐户名称不同，角色名称的用户部分不能为空。为角色分配权限，使用与为用户分配权限相同的语法执行：
+
+GRANT ALL ON app_db.* TO 'app_developer';  
+GRANT SELECT ON app_db.* TO 'app_read';  
+GRANT INSERT, UPDATE, DELETE ON app_db.* TO 'app_write';CREATE ROLE 'app_developer', 'app_read', 'app_write'; 
+
+现在假设您最初需要一个开发人员帐户，两个需要只读访问权的用户以及一个需要读取/写入权限的用户。使用CREATEUSER创建用户：
+
+CREATE USER 'dev1'@'localhost' IDENTIFIED BY 'dev1pass';  
+CREATE USER 'read_user1'@'localhost' IDENTIFIED BY 'read_user1pass';  
+CREATE USER 'read_user2'@'localhost' IDENTIFIED BY 'read_user2pass';  
+CREATE USER 'rw_user1'@'localhost' IDENTIFIED BY 'rw_user1pass'; 
+
+要为每个用户分配其所需的权限，可以使用GRANT与刚才显示的形式相同的语句，但这需要列举每个用户的个人权限。相反，使用GRANT允许授权角色而非权限的替代语法：
+
+GRANT 'app_developer' TO 'dev1'@'localhost';  
+GRANT 'app_read' TO 'read_user1'@'localhost', 'read_user2'@'localhost';  
+GRANT 'app_read', 'app_write' TO 'rw_user1'@'localhost'; 
+
+结合角色所需的读取和写入权限，在GRANT中授权 rw_user1用户读取和写入的角色。
+
+在GRANT授权角色的语法和授权用户的语法不同：有一个ON来区分角色和用户的授权，有ON的为用户授权，而没有ON用来分配角色。
+
+
+
+正如可以授权某个用户的角色一样，可以从帐户中撤销这些角色：
+
+REVOKE role FROM user; 
+REVOKE可以用于角色修改角色权限。这不仅影响角色本身权限，还影响任何授予该角色的用户权限。假设想临时让所有用户只读，使用REVOKE从该app_write角色中撤消修改权限 ：
+
+REVOKE INSERT, UPDATE, DELETE ON app_db.* FROM 'app_write'; 
+
+
+要删除角色，请使用DROP ROLE：
+
+DROP ROLE 'app_read', 'app_write'; 
+
+
+更改帐户密码，以便原始开发人员不能使用它，并让新的开发人员使用该帐户：
+
+ALTER USER 'old_app_dev'@'localhost' IDENTIFIED BY 'new_password'; 
+
+使用角色：锁定帐户以防止任何人使用它来连接服务器：
+
+ALTER USER 'old_app_dev'@'localhost' ACCOUNT LOCK; 
+
+
+查询用户名和主机：
+SELECT User, Host FROM mysql.user;
+
+显示所有的用户（不重复）
+SELECT DISTINCT User FROM mysql.user;
+
+2.创建数据库,将databasename换成数据库名称.
+
+CREATE DATABASE `databasename` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+
+CREATE USER username IDENTIFIED BY 'password';
+
+4.授权username用户在databasename上的权限,all代表所有,可分为INSERT,SELECT,UPDATE等权限,%代表任何ip都可访问该数据库.
+
+grant all privileges on databasename.* to 'username'@'%';
+
+创建表：runoob_tbl
+CREATE TABLE runoob_tbl(runoob_id INT NOT NULL AUTO_INCREMENT,runoob_title VARCHAR(100) NOT NULL,runoob_author VARCHAR(40) NOT NULL,submission_date DATE,PRIMARY KEY ( runoob_id ))ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+查看表：
+ SHOW TABLES;
+
+导入表：
+source 表的绝对路径
+查看一张表：user
+DESCRIBE user;
+
+

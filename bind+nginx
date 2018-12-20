@@ -85,3 +85,17 @@ OK
 sudo service bind9 restart  #sudo /etc/init.d/bind9 restart
 
 8.可以修改本机的/etc/resolve.conf文件修改dns服务器地址进行测试，也可以使用dig指令进行测试, 指令格式为 : dig 域名 @dns服务器地址，由于此处dns的服务器是搭建在本地，所以使用了127.0.0.1,
+
+
+
+
+
+nginx 配置:
+
+启动:
+sudo /usr/sbin/nginx
+sudo service nginx start
+sudo service nginx stop
+
+启动后的操作：
+sudo nginx -s reload /stop
