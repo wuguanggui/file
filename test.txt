@@ -87,6 +87,7 @@ gitlab-ctl status
 gitlab-ctl restart 
 gitlab-ctl reconfigure
 
+sudo chmod -R o+x /var/opt/gitlab/gitlab-rails
 
 添加规则
 在终端输入:

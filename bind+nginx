@@ -99,3 +99,13 @@ sudo service nginx stop
 
 启动后的操作：
 sudo nginx -s reload /stop
+
+
+
+静态资源配置;
+location /image/ {
+            root   /usr/local/static/;
+            autoindex on;
+        }
+
+

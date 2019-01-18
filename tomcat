@@ -1,0 +1,4 @@
+#查看tomcat进程id
+echo $(ps -ef |grep tomcat |grep -w 'tomcat'|grep -v 'grep'|awk '{print $2}')
+
+

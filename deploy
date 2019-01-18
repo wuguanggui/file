@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+#filename deploy_data.sh
+#descripting:copy download
+#author:wuguanggui
+#email:xxxx
+#revision 1.0
+#data:2018.12.21
+
+JENKINS_WORK=$HOME/jenkins/workspace/web
+DIR_HOME=/data/download
+DIR="dist"
+
+#删除旧版本
+rm -rf $DIR_HOME/$DIR
+
+#init web project
+cd $JENKINS && npm install && npm run build
+
+#copy dist file
+
+sudo cp -r $JENKINS_WORK/$DIR  $DIR_HOME/$DIR
+
+ssh -tt jdah@39.108.238.214 < $HOME/deploy.sh
+
+
+
+
+
+#!bin/sh
+#
+#filename:deploy
+#author:wuguanggui
+#email:
+#revision:
+#description:
+#data:
+
+cd $HOME && wget http://gotorural.top/download/dist web/dist
+
+sudo nginx -s reload
+
+exit
+
+
